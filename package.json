@@ -1,6 +1,6 @@
 {
-  "name": "my-webpack-project",
-  "description": "My webpack project",
+  "name": "compuas-css-workshop",
+  "description": "Prosjektet fungerer som et utgangspunkt for en workshop om CSS animasjoner.",
   "version": "1.0.0",
   "scripts": {
     "start": "webpack serve --mode=development --port=5000",
