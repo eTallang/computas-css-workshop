@@ -1,1 +1,11 @@
-// Legg til stiler her
+.circle {
+  background-color: red;
+  width: 400px;
+  height: 400px;
+  transition: all 1s ease;
+  
+  &:hover {
+    width: 800px;
+  }
+}
+

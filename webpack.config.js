@@ -13,8 +13,8 @@ const config = {
     path: path.resolve(__dirname, "dist"),
   },
   devServer: {
-    open: true,
     host: "localhost",
+    port: 5000
   },
   plugins: [
     new HtmlWebpackPlugin({
@@ -30,10 +30,6 @@ const config = {
         test: /\.(ts|tsx)$/i,
         loader: "ts-loader",
         exclude: ["/node_modules/"],
-      },
-      {
-        test: /\.css$/i,
-        use: [stylesHandler, "css-loader"],
       },
       {
         test: /\.s[ac]ss$/i,
