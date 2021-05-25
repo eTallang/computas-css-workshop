@@ -1,23 +1,4 @@
 body {
   overflow: hidden;
+  margin: 0;
 }
-
-.flex-container {
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.circle {
-  background-color: tomato;
-  border-radius: 9999px;
-  width: 400px;
-  height: 400px;
-  transition: all 1s ease;
-  
-  &:hover {
-    width: 800px;
-  }
-}
-
