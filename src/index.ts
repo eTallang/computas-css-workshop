@@ -1,37 +1,37 @@
 import "../styles.scss";
+import Circle from "./circle";
 
 const container = document.getElementById("root") as HTMLCanvasElement;
 const context = container.getContext("2d");
-let canvasWidth = window.innerWidth;
+
 let canvasHeight = window.innerHeight;
+let canvasWidth = window.innerWidth;
 
-setCanvasSize();
-render();
+let mouseX: number;
+let mouseY: number;
 
-window.addEventListener("resize", () => {
-  canvasWidth = window.innerWidth;
-  canvasHeight = window.innerHeight;
-  setCanvasSize();
-  render();
-});
+let circles: Circle[] = [];
+let maxRadius = 10;
+
+function generateCircles(amount: number) {
+  for (let i = 0; i < amount; i++) {
+    const size = Math.random();
+    const radius = size * maxRadius;
+    const x = Math.random() * (canvasWidth - radius * 2) + radius;
+    const y = Math.random() * (canvasHeight - radius * 2) + radius;
+    const color = `rgba(255, 99, 71, ${size})`
+    const dy = size;
+    const dx = size;
+
+    circles.push(new Circle(context, x, y, dx, dy, radius, color, canvasHeight, canvasWidth));
+  }
+}
 
 function render() {
-  createCircle(canvasWidth / 2, canvasHeight / 2, 50, "rgba(0,0,125,0.5)")
-  createCircle(canvasWidth / 4, canvasHeight / 4, 50, "rgba(0,0,125,0.5)")
-  context.clearRect(canvasWidth / 4, canvasHeight/ 4, 50, 50);
-};
+  context.clearRect(0, 0, canvasWidth, canvasHeight);
+  circles.forEach(circle => circle.draw(mouseX, mouseY));
 
-function createCircle(x: number, y: number, radius: number, color: string) {
-    context.beginPath();
-
-    //the arguments inside the arc function is: horizontal center position, vertical center position, radius, start angle, end angle, if it's going to be drawn counterclockwise
-    context.arc(x, y, radius, 0, Math.PI * 2, false);
-    //end of drawing the circle
-    context.closePath();
-  
-    //color in the circle
-    context.fillStyle = color;
-    context.fill();
+  window.requestAnimationFrame(render);
 }
 
 function setCanvasSize() {
@@ -39,42 +39,30 @@ function setCanvasSize() {
   container.height = canvasHeight;
 }
 
-// const createCircle = (...children: HTMLElement[]) => {
-//   const div = document.createElement("div");
-//   div.classList.add("circle");
+setCanvasSize();
+generateCircles(1000);
+render();
 
-//   if (children) {
-//     children.forEach((child) => div.appendChild(child));
-//   }
+window.addEventListener("resize", () => {
+  canvasWidth = window.innerWidth;
+  canvasHeight = window.innerHeight;
+  setCanvasSize();
+});
 
-//   return div;
-// };
+window.addEventListener("mousemove", (e: MouseEvent) => {
+  mouseX = e.x;
+  mouseY = e.y;
+});
 
-// const createRotator = (...children: HTMLElement[]) => {
-//   const div = document.createElement("div");
-//   div.classList.add("rotator");
 
-//   if (children) {
-//     children.forEach((child) => div.appendChild(child));
-//   }
 
-//   return div;
-// };
+// function drawLine(event: MouseEvent) {
+//   context.beginPath();
 
-// const recursivePopulator = (child: HTMLElement, count: number): HTMLElement => {
-//   const element = count % 2 === 0 ? createRotator() : createCircle();
-//   const c = recursivePopulator(child.appendChild(element), ++count);
-
-//   if (count === 100) {
-//     container.appendChild(c);
-//     return;
-//   }
-
-//   return c;
+//   context.arc(event.x, event.y, 60 + Math.random() * 20, 1, 5, true);
+//   context.closePath();
+//   context.fillStyle = "tomato";
+//   context.fill();
 // }
 
-// recursivePopulator(createCircle(), 0);
-
-// container.appendChild(
-//   createRotator(createCircle(createRotator(createCircle(createCircle()))))
-// );
+// document.addEventListener("mousedown", drawLine);
