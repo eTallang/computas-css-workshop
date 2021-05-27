@@ -11,16 +11,16 @@ let canvasHeight = window.innerHeight;
 let canvasWidth = window.innerWidth;
 
 const mouse: Mouse = {
-  x: undefined,
-  y: undefined,
+  x: 0,
+  y: 0,
 };
 
 // const colors = ["#D94862", "#344973", "#F2E750", "#D98218", "#F26849"];
 const colors = ["#fffce0", "#D94862", "#F26849"];
 let circles: Circle[] = [];
-const speedX = 40;
-const speedY = 30;
-let maxRadius = 20;
+const fps = 60;
+let lastTimeStamp = 0;
+let maxRadius = 2;
 
 function generateCircles(amount: number) {
   for (let i = 0; i < amount; i++) {
@@ -28,23 +28,21 @@ function generateCircles(amount: number) {
     const x = canvasWidth / 2;
     const y = canvasHeight / 2;
     const color = colors[Math.floor(Math.random() * colors.length)];
-    const dx = Math.random() * speedX - (speedX / 2);
-    const dy = Math.random() * speedY - (speedY / 2);
-    circles.push(new Circle(context, x, y, dx, dy, radius, color));
+    circles.push(new Circle(context, x, y, radius, color));
   }
 }
 
-function render() {
-  // To add motion blur
-  // context.fillStyle = 'rgba(16, 18, 25, 0.5)';
-  // context.fillRect(0, 0, canvasWidth, canvasHeight);
-
-  // To clear for each render
-  context.clearRect(0, 0, canvasWidth, canvasHeight);
-
-  circles.forEach((circle) => circle.draw(mouse));
-
+function render(timestamp?: number) {
   window.requestAnimationFrame(render);
+
+  if (timestamp - lastTimeStamp > 1000 / fps) {
+    lastTimeStamp = timestamp;
+    context.fillStyle = 'rgba(16, 18, 35, 0.006)';
+    context.fillRect(0, 0, canvasWidth, canvasHeight);
+    // context.clearRect(0, 0, canvasWidth, canvasHeight);
+  
+    circles.forEach((circle) => circle.update(mouse));
+  }
 }
 
 function setCanvasSize() {
@@ -64,11 +62,11 @@ window.addEventListener("mousemove", (e: MouseEvent) => {
 });
 
 window.addEventListener("mouseout", (e: MouseEvent) => {
-  mouse.x = undefined;
-  mouse.y = undefined;
+  mouse.x = 0;
+  mouse.y = 0;
 });
 
 // App initiation
 setCanvasSize();
-generateCircles(100);
+generateCircles(400);
 render();
