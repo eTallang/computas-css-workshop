@@ -2,7 +2,10 @@ import Mouse from "./types";
 
 export default class Circle {
   private scale = 1;
-  private friction = 0.9;
+  private initialPos: Mouse;
+  private initialVelocity: Mouse;
+  private radians = Math.random() * Math.PI * 2;
+  private velocity = 0.05;
 
   constructor(
     private context: CanvasRenderingContext2D,
@@ -12,46 +15,40 @@ export default class Circle {
     private dy: number,
     private radius: number,
     private color: string,
-    private canvasHeight: number,
-    private canvasWidth: number,
-    private gravity = 0
-  ) {}
+  ) {
+    this.initialPos = {
+      x: x,
+      y: y
+    }
+
+    this.initialVelocity = {
+      x: dx,
+      y: dy
+    }
+  }
 
   draw(mouse: Mouse) {
-    if (this.x - this.radius < 0) {
-      this.dx = -this.dx;
-    } else if (this.x + this.radius > this.canvasWidth) {
-      this.dx = -this.dx;
+    this.radians += this.velocity;
+    if (this.scale < 0.0001) {
+      this.x = this.initialPos.x;
+      this.y = this.initialPos.y;
+      this.dx = this.initialVelocity.x;
+      this.dy = this.initialVelocity.y;
     }
+  
+    this.x += this.dx * Math.cos(this.radians);
+    this.y += this.dy * Math.sin(this.radians);
 
-    if (this.y - this.radius < 0) {
-      this.dy = -this.dy;
-    } else if (this.y + this.radius + this.dy > this.canvasHeight) {
-      this.dy = -this.dy;
-      if (this.gravity > 0) {
-        this.dy = this.dy * this.friction;
-      }
-    } else {
-      this.dy += this.gravity;
-    }
-
-    this.x += this.dx;
-    this.y += this.dy;
-
-    if (Math.abs(this.x - mouse.x) < 100 && Math.abs(this.y - mouse.y) < 100) {
-      if (this.scale < 60) {
-        this.scale++;
-      }
-    } else if (this.scale > 0) {
-      this.scale--;
-    }
+    this.dy = this.dy / 1.05;
+    this.dx = this.dx / 1.05;
+    this.scale = Math.min(Math.abs(this.dx), 1);
 
     this.createCircle();
   }
 
   private createCircle() {
     this.context.beginPath();
-    this.context.arc(this.x, this.y, this.radius + this.scale, 0, Math.PI * 2);
+    this.context.arc(this.x, this.y, this.radius * this.scale, 0, Math.PI * 2);
     this.context.closePath();
     this.context.fillStyle = this.color;
     this.context.fill();
