@@ -17,7 +17,7 @@ export default class Circle {
     private gravity = 0
   ) {}
 
-  draw(mouse: Mouse) {
+  update(mouse: Mouse) {
     if (this.x - this.radius < 0) {
       this.dx = -this.dx;
     } else if (this.x + this.radius > this.canvasWidth) {
