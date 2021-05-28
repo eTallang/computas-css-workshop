@@ -1,28 +1,26 @@
-import "../styles.scss";
-import Circle from "./circle";
+import '../styles.scss';
+import Circle from './circle';
 import Mouse from './types';
 
-const container = document.getElementById("root") as HTMLCanvasElement;
-const context = container.getContext("2d");
-const backgroundColor = 'rgba(16, 18, 25, 1)';
-container.style.backgroundColor = backgroundColor;
-
+const container = document.getElementById('root') as HTMLCanvasElement;
+const context = container.getContext('2d')!;
+container.style.backgroundColor = 'rgba(16, 18, 25, 1)';
 let canvasHeight = window.innerHeight;
 let canvasWidth = window.innerWidth;
 let lastTimeStamp = 0;
 const fps = 60;
 
 const mouse: Mouse = {
-  x: undefined,
-  y: undefined
-}
+  x: canvasWidth / 2,
+  y: canvasHeight / 2,
+};
 
 // const colors = ["#D94862", "#344973", "#F2E750", "#D98218", "#F26849"];
-const colors = ["#fffce0", '#D94862',"#F26849"];
+const colors = ['#fffce0', '#D94862', '#F26849'];
 let circles: Circle[] = [];
+const maxRadius = 5;
 const speedX = 2;
 const speedY = 1.5;
-let maxRadius = 5;
 
 function generateCircles(amount: number) {
   for (let i = 0; i < amount; i++) {
@@ -31,8 +29,10 @@ function generateCircles(amount: number) {
     const x = Math.random() * (canvasWidth - radius * 2) + radius;
     const y = Math.random() * (canvasHeight - radius * 2) + radius;
     const color = colors[Math.floor(Math.random() * colors.length)];
-    const dx = Math.random() * size * speedX * (3 - 6 * Math.round(Math.random()));
-    const dy = Math.random() * size * speedY * (3 - 6 * Math.round(Math.random()));
+    const dx =
+      Math.random() * size * speedX * (3 - 6 * Math.round(Math.random()));
+    const dy =
+      Math.random() * size * speedY * (3 - 6 * Math.round(Math.random()));
     circles.push(
       new Circle(
         context,
@@ -50,14 +50,16 @@ function generateCircles(amount: number) {
   }
 }
 
-function render(timestamp?: number) {
+function render(timestamp: number = 0) {
   window.requestAnimationFrame(render);
 
   if (timestamp - lastTimeStamp > 1000 / fps) {
     lastTimeStamp = timestamp;
     context.clearRect(0, 0, canvasWidth, canvasHeight);
-  
-    circles.forEach((circle) => circle.update(mouse));
+
+    for (let i = 0; i < circles.length; i++) {
+      circles[i].update(mouse);
+    }
   }
 }
 
@@ -66,20 +68,20 @@ function setCanvasSize() {
   container.height = canvasHeight;
 }
 
-window.addEventListener("resize", () => {
+window.addEventListener('resize', () => {
   canvasWidth = window.innerWidth;
   canvasHeight = window.innerHeight;
   setCanvasSize();
 });
 
-window.addEventListener("mousemove", (e: MouseEvent) => {
+window.addEventListener('mousemove', (e: MouseEvent) => {
   mouse.x = e.clientX;
   mouse.y = e.clientY;
 });
 
-window.addEventListener("mouseout", (e: MouseEvent) => {
-  mouse.x = undefined;
-  mouse.y = undefined;
+window.addEventListener('mouseout', (e: MouseEvent) => {
+  mouse.x = canvasWidth / 2;
+  mouse.y = canvasHeight / 2;
 });
 
 // App initiation
